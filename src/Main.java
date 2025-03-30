@@ -7,13 +7,13 @@ import java.sql.*;
 
 public class Main {
 
-    //private static Scanner scanner = new Scanner(System.in);
+
     public static void main(String[] args) {
 
 
         Customer customer=new Customer();
         Account account=new Account();
-        menus menu=new menus();
+        Menu menu=new Menu();
 
 
         try {
