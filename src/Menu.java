@@ -1,7 +1,7 @@
 import java.sql.Connection;
 import java.util.Scanner;
 
-public class menus {
+public class Menu {
     public boolean logged;
     public boolean quit;
 
@@ -38,10 +38,10 @@ public class menus {
 
         if (choice == 1) {
 
-            customer.signUpCustomer(connection, scanner);
-            if (customer.loggingCustomer(connection, scanner))
+            if(customer.signUpCustomer(connection, scanner))
+            {if (customer.loggingCustomer(connection, scanner))
             {SetLogged(true);
-            choiceB(account, connection, customer);}
+            choiceB(account, connection, customer);}}
             else
                 choiceA(customer, connection, account);
 
@@ -95,7 +95,7 @@ public class menus {
                 int id = scanner.nextInt();
                 System.out.println("Enter the sum: ");
                 float amount = scanner.nextFloat();
-                account.deposit(connection, id, amount);
+                account.deposit(connection, id, amount, customer.getId());
                 choiceC(account, connection, customer);
             } else if (choice == 2) {
                 account.viewCustomerAccounts(connection, customer.getId());
@@ -103,8 +103,7 @@ public class menus {
                 int id = scanner.nextInt();
                 System.out.println("Enter the sum: ");
                 float amount = scanner.nextFloat();
-                amount = amount * -1;
-                account.deposit(connection, id, amount);
+                account.withdrawal(connection, id, amount,customer.getId());
                 choiceC(account, connection, customer);
 
             } else if (choice == 3) {
