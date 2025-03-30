@@ -3,6 +3,7 @@ import java.util.Scanner;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;
+import java.util.regex.Pattern;
 
 public class Customer {
     private int id;
@@ -58,8 +59,32 @@ public class Customer {
             this.name = scanner.nextLine();
             System.out.println("Enter your email:");
             this.email = scanner.nextLine();
+
+
+            String checkEmailQuery = "SELECT COUNT(*) FROM customer WHERE email = ?";
+            PreparedStatement checkEmailStmt = connection.prepareStatement(checkEmailQuery);
+            checkEmailStmt.setString(1, email);
+            ResultSet emailResult = checkEmailStmt.executeQuery();
+
+            if (emailResult.next() && emailResult.getInt(1) > 0) {
+                System.out.println("Error: This email is already registered. Please log in or use a different email.");
+                emailResult.close();
+                checkEmailStmt.close();
+                return false;
+            }
+
+            if(!isValidEmail(email)) {
+                System.out.println("Invalid email.");
+               return false;
+            }
             System.out.println("Enter your password:");
             this.password = scanner.nextLine();
+
+            if(!isValidPassword(password)) {
+                System.out.println("Invalid password.:");
+                return false;
+            }
+
 
             String encryptedPassword = encrypt(password);
 
@@ -125,6 +150,15 @@ public class Customer {
             throw new RuntimeException("Error while decrypting", e);
         }
     }*/
+public boolean isValidEmail(String email) {
+   String pattern = "^[a-zA-Z0-9._%+-]{6,}+@+[a-zA-Z]{3,}+\\.[a-zA-Z]{2,}+$";
 
+    return Pattern.compile(pattern).matcher(email).matches();
+}
+
+public boolean isValidPassword(String password) {
+    String pattern = "^(?=.*[0-9._%+-].*[0-9._%+-])[a-zA-Z0-9._%+-]{4,}$";
+    return Pattern.compile(pattern).matcher(password).matches();
+}
 }
 
