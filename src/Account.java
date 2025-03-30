@@ -65,12 +65,13 @@ public class Account {
     }
 
 
-    public void deposit(Connection connection, int id_account, float amount) {
+    public void deposit(Connection connection, int id_account, float amount,int id_customer) {
         try {
             // Check if account exists
-            String checkQuery = "SELECT balance FROM account WHERE id_account = ?";
+            String checkQuery = "SELECT balance FROM account WHERE id_account = ? AND id_customer = ?";
             PreparedStatement checkStmt = connection.prepareStatement(checkQuery);
             checkStmt.setInt(1, id_account);
+            checkStmt.setInt(2, id_customer);
             ResultSet resultSet = checkStmt.executeQuery();
 
             if (resultSet.next()) {
@@ -89,7 +90,46 @@ public class Account {
                     System.out.println("Deposit failed.");
                 }
             } else {
-                System.out.println("Account not found.");
+                System.out.println("Account not found or does not belong to the customer.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void withdrawal(Connection connection, int id_account, float amount,int id_customer) {
+        try {
+            // Check if account exists
+            String checkQuery = "SELECT balance FROM account WHERE id_account = ? AND id_customer = ?";
+            PreparedStatement checkStmt = connection.prepareStatement(checkQuery);
+            checkStmt.setInt(1, id_account);
+            checkStmt.setInt(2, id_customer);
+            ResultSet resultSet = checkStmt.executeQuery();
+
+
+            if (resultSet.next()) {
+                float currentBalance = resultSet.getFloat("balance");
+                if (amount <= currentBalance) {
+
+                // Update balance
+                String updateQuery = "UPDATE account SET balance = ? WHERE id_account = ?";
+                PreparedStatement updateStmt = connection.prepareStatement(updateQuery);
+                updateStmt.setFloat(1, currentBalance - amount);
+                updateStmt.setInt(2, id_account);
+                int rowsUpdated = updateStmt.executeUpdate();
+
+                if (rowsUpdated > 0) {
+                    System.out.println("Withdrawal successful! New balance: $" + (currentBalance - amount));
+                } else {
+                    System.out.println("Withdrawal failed.");
+                }
+            }
+                else
+                    System.out.println("Withdrawal failed.Insufficient funds.");
+
+            } else {
+                System.out.println("Account not found or does not belong to the customer.");
             }
         } catch (SQLException e) {
             e.printStackTrace();
