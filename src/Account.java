@@ -86,6 +86,8 @@ public class Account {
 
                 if (rowsUpdated > 0) {
                     System.out.println("Deposit successful! New balance: $" + (currentBalance + amount));
+                    TransactionHistory transactionHistory = new TransactionHistory();
+                    transactionHistory.addTransaction(connection,TransactionType.deposit,id_account,amount);
                 } else {
                     System.out.println("Deposit failed.");
                 }
@@ -125,7 +127,8 @@ public class Account {
 
                 if (rowsUpdated > 0) {
                     System.out.println("Withdrawal successful! New balance: $" + (currentBalance - amount));
-                } else {
+                }
+                else {
                     System.out.println("Withdrawal failed.");
                 }
             }
@@ -175,12 +178,7 @@ public class Account {
         }
     }
 
-    public void transactionHistory(Connection connection, int id_account) {
-        String query = "SELECT * FROM transaction_history WHERE id_account = ?";
 
-
-
-    }
 }
 
 

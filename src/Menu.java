@@ -122,6 +122,8 @@ public class Menu {
 
             } else if (choice == 4) {
                 System.out.println("Transactions history");
+                TransactionHistory transactionHistory = new TransactionHistory();
+                transactionHistory.viewTransactionHistory(connection,customer.getId());
                 choiceC(account, connection, customer);
             } else if (choice == 5) {
                 choiceB(account, connection, customer);
