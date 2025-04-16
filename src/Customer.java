@@ -80,6 +80,10 @@ public class Customer {
             System.out.println("Enter your password:");
             this.password = scanner.nextLine();
 
+            if(!isValidPassword(password)) {
+                System.out.println("Invalid password.:");
+                return false;
+            }
 
             if(!isValidPassword(password)) {
                 System.out.println("Invalid password.:");
